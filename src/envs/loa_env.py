@@ -9,8 +9,9 @@ class LoaEnv(gym.Env):
 
     def __init__(self, window):
         # for board 4x4
-        self.action_space = spaces.Discrete(8*4) #8 directions 4 pieces
-        self.observation_space = gym.spaces.Box(low=np.int8(0), high=np.int8(2), shape=(4, 4), dtype=np.int8)
+        self.action_space = spaces.Discrete(4*4) #4 directions (UP, DOWN, LEFT, RIGHT) 4 pieces
+        self.observation_space = spaces.Box(low=0.0, high=5.0, shape=(16, ), dtype=np.float64)
+
 
         self.render_mode = 'terminal'
         self.max_turns = 200
@@ -24,11 +25,12 @@ class LoaEnv(gym.Env):
         reward = 0
         pieceN = (action // 4) + 1
         moveDir = action % 4
+        info = {}
 
         resultRow, resultCol = self.game.board.check_if_valid_move(pieceN, moveDir)
         
         if resultRow == -1: #invalid move
-            return np.copy(self.game.board.npBoard), reward, False
+            return np.ravel(self.game.board.npBoard), reward, False, info
 
 
         self.game.board.move_piece(pieceN, resultRow, resultCol)
@@ -36,14 +38,15 @@ class LoaEnv(gym.Env):
         
         if(self.done == 1):
             reward = 20
-            return np.copy(self.game.board.npBoard), reward, True
+            return np.ravel(self.game.board.npBoard), reward, True, info
         
         reward = -1
-        return np.copy(self.game.board.npBoard), reward, False
+        return np.ravel(self.game.board.npBoard), reward, False, info
 
     def reset(self):
+        self.done = -1 # -1 = game continues, 1 game is over
         self.game.reset()
-        pass
+        return np.ravel(self.game.board.npBoard)
 
     def render(self):
         self.game.update()
