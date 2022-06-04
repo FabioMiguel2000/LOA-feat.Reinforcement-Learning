@@ -20,7 +20,7 @@ ACTION_SPACE = (BOARD_SIZE -2) * 2 * 4
 TIMESTEPS = 10000
 
 models_dir = f"models/"
-log_dir = f"logs/PPO-{int(time.time())}"
+log_dir = f"logs/"
 
 if not os.path.exists(models_dir):
     os.makedirs(models_dir)
