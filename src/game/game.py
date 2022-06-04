@@ -26,24 +26,6 @@ class Game:
         self.turn = BLACK  # The current player turn
         self.valid_moves = []  # List of all valid moves
 
-    # Given the row and column clicked by the mouse, depending on the current condition
-    # it can either move a piece on the board or select a piece
-    def select(self, row, col):
-        if self.selected:  # piece is already selected
-            result = self.move(row, col)  # move piece if it is a valid move
-
-            if not result:  # if not valid move
-                self.selected = None
-                self.select(row, col)
-
-        piece = self.board.get_piece(row, col)
-        if piece != 0 and piece.color == self.turn:  # If valid move and player's turn
-            self.selected = piece
-            self.valid_moves = self.board.get_valid_moves(piece)
-
-            return True
-
-        return False
 
     # Moves the selected piece if it is a valid move
     def move(self, row, col):
@@ -106,27 +88,6 @@ class Game:
                     return BLACK_WINS
         return GAME_CONTINUE
 
-    # Function Overloading
-    def check_gameover2(self, board):
-        pieceCount = self.countFirstGroup(self.turn)
-        if self.turn == BLACK:
-            if pieceCount == board.black_left:
-                return BLACK_WINS
-
-            else:
-                pieceCount = self.countFirstGroup(WHITE)
-                if pieceCount == board.white_left:
-                    return WHITE_WINS
-
-        else:  # White
-            if pieceCount == board.white_left:
-                return WHITE_WINS
-            else:
-                pieceCount = self.countFirstGroup(BLACK)
-                if pieceCount == board.black_left:
-                    return BLACK_WINS
-        return GAME_CONTINUE
-
     # Finds the size of the first connected pieces of the provided color 
     def countFirstGroup(self, colorPiece):
         self.counter = 0
@@ -162,12 +123,6 @@ class Game:
     def get_board(self):
         return self.board
     
-    # Function to replace current board with new board provided by the AI
-    def ai_move(self,board):
-        self.board = board
-        self.incrementMoveCount()
-        self.change_turn()
-
     # Update the moves made by the pieces, for final result output
     def incrementMoveCount(self):
         if self.turn == BLACK:

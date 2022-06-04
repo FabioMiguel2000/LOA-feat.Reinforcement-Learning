@@ -46,7 +46,7 @@ def main(MODEL):
         print(env.game.board.npBoard)
         episode_rewards = []
         done = False
-        # time.sleep(1)
+        time.sleep(1)
         while not done:
 
             # ----------- GUI stuff -------------
@@ -67,7 +67,7 @@ def main(MODEL):
             if(reward != 0):
                 env.render()
                 print_status(action, env.game.board.npBoard, reward)
-                # time.sleep(1)
+                time.sleep(1)
             
             if(done):
                 env.close()
