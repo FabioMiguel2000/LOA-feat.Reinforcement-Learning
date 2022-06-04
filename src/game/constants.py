@@ -1,4 +1,3 @@
-import pygame
 
 WIDTH, HEIGHT = 800, 800
 BOARD_SIZE = 4

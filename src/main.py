@@ -25,8 +25,8 @@ log_dir = f"logs/PPO-{int(time.time())}"
 if not os.path.exists(models_dir):
     os.makedirs(models_dir)
 
-# if not os.path.exists(log_dir):
-#     os.makedirs(log_dir)
+if not os.path.exists(log_dir):
+    os.makedirs(log_dir)
 
 
 def main(MODEL):
@@ -104,18 +104,18 @@ def print_status(action, board, reward):
 def train_model(MODEL):
     env = LoaEnv(WINDOW)
     if(MODEL == "PPO"):
-        model = PPO("MlpPolicy", env, verbose=1)
+        model = PPO("MlpPolicy", env, verbose=1, tensorboard_log=log_dir)
     elif MODEL == "A2C":
-        model = A2C("MlpPolicy", env, verbose=1)
+        model = A2C("MlpPolicy", env, verbose=1, tensorboard_log=log_dir)
     
-    model.learn(total_timesteps=TIMESTEPS, reset_num_timesteps= False, tb_log_name=model)
+    model.learn(total_timesteps=TIMESTEPS, reset_num_timesteps= False, tb_log_name=MODEL)
     filename = f"{models_dir}/{MODEL}_{TIMESTEPS}_STEPS_MODEL"
     model.save(filename)
     return filename
 
 model = "PPO"
-# train_model(model)    #to train a model
-main(model)
+train_model(model)    #to train a model
+# main(model)
 
 
 
