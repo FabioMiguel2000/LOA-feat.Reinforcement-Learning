@@ -5,6 +5,7 @@ from envs.loa_env import LoaEnv
 from stable_baselines3 import A2C, PPO, HerReplayBuffer, DQN
 from sb3_contrib import TRPO
 from stable_baselines3.common.env_checker import check_env
+import matplotlib.pyplot as plt
 
 import pygame
 import numpy as np
@@ -18,7 +19,7 @@ WINDOW = pygame.display.set_mode((WIDTH, HEIGHT))
 FPS = 60
 EPISODES_NUM = 100
 
-TIMESTEPS = 100000
+TIMESTEPS = 120000
 
 models_dir = f"models/"
 log_dir = f"logs/"
@@ -30,7 +31,7 @@ if not os.path.exists(log_dir):
     os.makedirs(log_dir)
 
 
-def main(MODEL):
+def test(MODEL):
     clock = pygame.time.Clock()     # Object to help track timeƒ
     env = LoaEnv(WINDOW)
     STOP = False            # Game Loop Flag
@@ -41,15 +42,14 @@ def main(MODEL):
         model = A2C.load(f"{models_dir}/{MODEL}_{TIMESTEPS}_STEPS_MODEL", env=env)
     elif MODEL == "TRPO":
         model = TRPO.load(f"{models_dir}/{MODEL}_{TIMESTEPS}_STEPS_MODEL", env=env)
-    total_moves = 0
     all_episode_rewards = []
+    all_episode_length = []
     for episode in range (1, EPISODES_NUM + 1):
         observation = env.reset()
         env.render()
         print(env.game.board.npBoard)
         episode_rewards = []
         done = False
-        # time.sleep(1)
         
         counter_moves = 0
         while not done:
@@ -74,22 +74,37 @@ def main(MODEL):
                 counter_moves +=1
                 env.render()
                 print_status(action, env.game.board.npBoard, reward)
-                # time.sleep(1) 
+
             
             if(done):
                 env.close()
                 print("Episode = ", episode, "has ended!\n")
                 print("Moves made = ", counter_moves, "has ended!\n")
 
-        total_moves += counter_moves
+        all_episode_length.append(counter_moves)
         all_episode_rewards.append(sum(episode_rewards))
         if(STOP):
             break
 
     mean_episode_reward = np.mean(all_episode_rewards)
-    print("Mean moves made per episode:", total_moves/EPISODES_NUM)
+    print("Mean moves made per episode:", np.mean(all_episode_length))
     print("Mean reward:", mean_episode_reward, "Num episodes:", EPISODES_NUM)
     pygame.quit()
+    x = range(EPISODES_NUM)
+    plt.plot(x, all_episode_rewards)
+    plt.xlabel('Episodes')
+    plt.ylabel('Rewards')
+    plt.title('Mean episodic training reward')
+    plt.savefig('books_read1.png')
+
+    plt.clf()
+    plt.plot(x, all_episode_length)
+    plt.xlabel('Episodes')
+    plt.ylabel('Number of Moves')
+    plt.title('Mean episode length')
+    plt.savefig('books_read2.png')
+
+
 
 def print_move(action):
     pieceN = (action // 4) + 1
@@ -120,16 +135,72 @@ def train_model(MODEL):
     elif MODEL == "TRPO":
         model = TRPO("MlpPolicy", env, verbose=1, tensorboard_log=log_dir)
     
-    model.learn(total_timesteps=TIMESTEPS*1.2, tb_log_name=MODEL)
+    model.learn(total_timesteps=TIMESTEPS, tb_log_name=MODEL)
     filename = f"{models_dir}/{MODEL}_{TIMESTEPS}_STEPS_MODEL"
     model.save(filename)
     return filename
 
 
-# train_model("PPO")    #to train a model
-# train_model("A2C")    #to train a model 
-# train_model("TRPO")
-main("TRPO")
+def run_model(MODEL):
+    env = LoaEnv(WINDOW)
+    
+    if(MODEL == "PPO"):
+        model = PPO.load(f"{models_dir}/{MODEL}_{TIMESTEPS}_STEPS_MODEL", env=env)
+    elif MODEL == "A2C":
+        model = A2C.load(f"{models_dir}/{MODEL}_{TIMESTEPS}_STEPS_MODEL", env=env)
+    elif MODEL == "TRPO":
+        model = TRPO.load(f"{models_dir}/{MODEL}_{TIMESTEPS}_STEPS_MODEL", env=env)
+    clock = pygame.time.Clock()     # Object to help track timeƒ
+    counter_moves = 0
+    total_reward = 0
+    observation = env.reset()
+    
+
+    env.render()
+    done = False
+    while not done:
+
+        clock.tick(FPS)    
+        # ----------- GUI stuff -------------
+         
+        for event in pygame.event.get():                
+            if event.type == pygame.QUIT:  
+                STOP = True
+                done = True    
+                break
+            
+        # -----------------------------------
+        # action = env.action_space.sample()   # Random Action
+        action, _ = model.predict(observation, deterministic=True) # most likely will make the same move for every episode if there is one to solve the game
+        observation, reward, done, info = env.step(action)
+
+        if(reward != 0):
+            time.sleep(1) 
+            total_reward += reward 
+            counter_moves +=1
+            env.render()
+            print_status(action, env.game.board.npBoard, reward)
+        
+        if(done):
+            time.sleep(5) 
+            env.close()
+    print(f"Total reward = {total_reward}\n")
+    print("Moves made = ", counter_moves, "has ended!\n")
+    pygame.quit()
+
+
+
+
+# training the model
+train_model("PPO")   
+train_model("A2C")    
+train_model("TRPO")
+#---------------------
+
+
+# test("TRPO")
+model = "A2C"   # Either "PPO", "A2C", "TRPO"
+run_model(model)
 
 
 

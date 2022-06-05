@@ -15,7 +15,7 @@ class LoaEnv(gym.Env):
         # for board 4x4
         self.action_space = spaces.Discrete(NUMBER_PIECES*4) #4 directions (UP, DOWN, LEFT, RIGHT) 4 pieces
         self.observation_space = spaces.Box(low=0.0, high=float(NUMBER_PIECES), shape=(BOARD_SIZE*BOARD_SIZE, ), dtype=np.float64)
-        self.max_connected_so_far = 0
+        # self.max_connected_so_far = int(NUMBER_PIECES/2)
 
         self.render_mode = 'terminal'
         self.max_turns = 200
@@ -34,6 +34,7 @@ class LoaEnv(gym.Env):
         resultRow, resultCol = self.game.board.check_if_valid_move(pieceN, moveDir)
         
         if resultRow == -1: #invalid move
+            reward = -1
             return np.ravel(self.game.board.npBoard), reward, False, info
 
 
@@ -49,14 +50,15 @@ class LoaEnv(gym.Env):
         # connected_pieces = self.game.board.maxGroupSize()
         # if(self.max_connected_so_far < connected_pieces):
         #     self.max_connected_so_far = connected_pieces
-        #     return np.ravel(self.game.board.npBoard), self.max_connected_so_far*2, False, info
+        #     reward = 1
+        #     return np.ravel(self.game.board.npBoard), 1, False, info
         
         reward = -1
         return np.ravel(self.game.board.npBoard), reward, False, info
 
     def reset(self):
-        self.max_connected_so_far = 0
-        self.done = -1 # -1 = game continues, 1 game is over
+        # self.max_connected_so_far = int(NUMBER_PIECES/2)
+        self.done = -1 
         self.game.reset()
         return np.ravel(self.game.board.npBoard)
 
