@@ -1,3 +1,4 @@
+from tkinter.tix import ROW
 import pygame
 import random
 import numpy as np
@@ -16,8 +17,7 @@ class Board:
         self.board = []
         self.npBoard = np.zeros((BOARD_SIZE, BOARD_SIZE))
         self.selected_piece = None
-        self.black_left = self.white_left = (BOARD_SIZE -2 ) * 2
-
+        self.black_left = self.white_left = NUMBER_PIECES
         self.counter = 0
         self.maxSoFar = 0
         self.visited = []
@@ -43,6 +43,7 @@ class Board:
                 #     self.board[row].append(Piece(row, col, WHITE))
 
                 if (row == 0 or row == ROWS - 1) and col != 0 and col != COLS - 1:
+                # if ((row==0 or row==ROWS-1) and (col == 0 or col == COLS-1)):
                     self.board[row].append(Piece(row, col, BLACK))
                     self.npBoard[row][col] = count
                     count += 1
@@ -141,7 +142,7 @@ class Board:
         return -10*averageDistance
 
     # Heuristic function - largest connected pieces size
-    def maxGroupSize(self, turn):
+    def maxGroupSize(self, turn=BLACK):
         self.counter = 0
         self.maxSoFar = 0
         self.visited = []
