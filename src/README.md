@@ -1,4 +1,4 @@
-# Lines of Actions
+# Lines of Actions Using RL
 
 ## Installation and prerequisite
 
