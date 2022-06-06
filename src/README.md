@@ -50,6 +50,8 @@ Options:
 
 ```
 
+
+
 ## Guide
 
 - After installing the prerequisites, running the command shown above:
@@ -59,3 +61,10 @@ Options:
         1. Trust Region Policy Optimization (TRPO)
     - Immediately after the training, these Models will be executed by an agent in order, an UI window will pop up showing the moves chosen
     - The terminal will also output the detail of the actions, rewards and observations of the system
+- To view graphical elements (graphs, plots) of the trained model, run the command:
+
+```shell
+tensorboard --logdir=logs 
+```
+
+- Open a browser, and head to `http://localhost:6006` (the port number may vary, see detail on the terminal)
