@@ -18,7 +18,7 @@ import sys
 FPS = 60
 EPISODES_NUM = 100
 
-TIMESTEPS = 150000          # Change this value training time steps, we recommend :
+TIMESTEPS = 150000          # Change this value training time steps for different results, we recommend :
                             #       about ~50 000 for 4x4 Board
                             #       about ~150 000 for 5x5 Board
                             #       about ~500 000 for 6x6 Board

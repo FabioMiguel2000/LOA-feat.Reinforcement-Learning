@@ -20,42 +20,42 @@ pip install protobuf~=3.19.0
 Using the Command Line, for Windows users, inside the `/src` directory:
 
 ```shell
-python main.py <WhitePlayer> <BlackPlayer> [NGames]
+python main.py [--board=BOARD_SIZE]
 ```
 
 Using the Command Line, for Linux or MacOS users, inside the `/src` directory:
 
 ```shell
-python3 main.py <WhitePlayer> <BlackPlayer> [NGames]
+python3 main.py [--board=BOARD_SIZE]
 ```
 
 
 Options:
 ```
 
-        <WhitePlayer> and <BlackPlayer> options: 
-                -h : For Human Player 
-                -l1 : For Bot Player Easy Level, 
-                -l2 : For Bot Player Medium Level, 
-                -l3 : For Bot Player Hard Level
+        [--board=BOARD_SIZE] options:
+                --board=4 : For 4x4 Board Size
+                --board=5 : For 5x5 Board Size
+                --board=6 : For 6x6 Board Size
 
-        [NGames] options: 
-                [1-1000] default=1 : Number of games to play, OPTIONAL
+                default= --board=5
 
         
         For Example: 
 
-            python main.py -l1 -h 30   # 30 Games with White being Easy Bot
-                                       # and Black being Human Player
+            python3 main.py
+                # or
+            python3 main.py --board=4   
+                                       
 
 ```
 
-## How to play
+## Guide
 
-- Each turn a player moves one of their pieces on the board (starting with Black);
-- For Human Players:
-    - Click and select a piece to move;
-    - After selecting a piece, it will appear green dots on the board, which are the moves that this piece can make;
-    - Click on the square with a green dot to move the selected piece onto that specific square;
-- Once game over is detected, the game result will be printed
-- If `[NGames]` is given and set greater than 1, then the board will automatically reset for the next game (`[NGames]` times);
+- After installing the prerequisites, running the command shown above:
+    - The following 3 RL Models will be trained using a default TIMESTEP=15000 (can be modified in the `main.py` by changing the `TIMESTEPS` variable):
+        1. Proximal Policy Optimization (PPO)
+        1. Advantage Actor Critic (A2C)
+        1. Trust Region Policy Optimization (TRPO)
+    - Immediately after the training, these Models will be executed by an agent in order, an UI window will pop up showing the moves chosen
+    - The terminal will also output the detail of the actions, rewards and observations of the system
