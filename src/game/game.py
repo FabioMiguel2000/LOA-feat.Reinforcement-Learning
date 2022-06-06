@@ -7,7 +7,8 @@ incY = [0, 0, -1, +1, -1, +1, -1, +1]
 
 
 class Game:
-    def __init__(self, window):
+    def __init__(self, window, boardSize = 5):
+        self.boardSize = boardSize
         self.window = window
         self.countMoves = [0,0]
         self.reset()
@@ -22,7 +23,7 @@ class Game:
     def reset(self):
         self.countMoves = [0,0]
         self.selected = None  # The current selected piece
-        self.board = Board()  # Game board object
+        self.board = Board(self.boardSize)  # Game board object
         self.turn = BLACK  # The current player turn
         self.valid_moves = []  # List of all valid moves
 
@@ -48,8 +49,9 @@ class Game:
     def draw_valid_moves(self, moves):
         for move in moves:
             row, col = move
+            square_size = WIDTH//self.boardSize
             pygame.draw.circle(self.window, GREEN,
-                               (col * SQUARE_SIZE + SQUARE_SIZE // 2, row * SQUARE_SIZE + SQUARE_SIZE // 2), 15)
+                               (col * square_size + square_size // 2, row * square_size + square_size // 2), 15)
 
     # Changes the player turn
     def change_turn(self):
@@ -93,13 +95,13 @@ class Game:
         self.counter = 0
         self.visited = []
 
-        for row in range(ROWS):
+        for row in range( self.boardSize):
             self.visited.append([])
-            for col in range(COLS):
+            for col in range( self.boardSize):
                 self.visited[row].append(False)
 
-        for row in range(ROWS):
-            for col in range(COLS):
+        for row in range( self.boardSize):
+            for col in range( self.boardSize):
                 tempiece = self.board.get_piece(row, col)
                 if tempiece != 0 and tempiece.color == colorPiece and not self.visited[row][col]:
                     self.counter = 0
@@ -109,7 +111,7 @@ class Game:
 
     # Using DFS to search same color adjacent pieces on the board
     def dfs(self, row, col, colorPiece):
-        if not (0 <= col < COLS and 0 <= row < ROWS) or self.visited[row][col]: return
+        if not (0 <= col <  self.boardSize and 0 <= row <  self.boardSize) or self.visited[row][col]: return
 
         tempiece = self.board.get_piece(row, col)
         if tempiece == 0 or tempiece.color != colorPiece: return

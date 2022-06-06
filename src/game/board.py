@@ -1,4 +1,3 @@
-from tkinter.tix import ROW
 import pygame
 import random
 import numpy as np
@@ -6,6 +5,7 @@ import numpy as np
 from .constants import *
 from .piece import *
 
+# WIDTH, HEIGHT = 800, 800
 
 incX = [-1, +1, 0, 0, -1, -1, +1, +1]
 incY = [0, 0, -1, +1, -1, +1, -1, +1]
@@ -13,11 +13,13 @@ incY = [0, 0, -1, +1, -1, +1, -1, +1]
 
 class Board:
 
-    def __init__(self):
+    def __init__(self, boardSize = 5):
+        self.boardSize = boardSize
+        self.square_size = WIDTH//self.boardSize
         self.board = []
-        self.npBoard = np.zeros((BOARD_SIZE, BOARD_SIZE))
+        self.npBoard = np.zeros((self.boardSize, self.boardSize))
         self.selected_piece = None
-        self.black_left = self.white_left = NUMBER_PIECES
+        self.black_left = self.white_left = 2*(self.boardSize-2)
         self.counter = 0
         self.maxSoFar = 0
         self.visited = []
@@ -27,24 +29,21 @@ class Board:
     # Draws the game board, this includes the black and white squares
     def draw_background(self, window):
         window.fill(BOARD_COLOR_1)
-
-        for row in range(ROWS):
-            for col in range(row % 2, ROWS, 2):  # Paint every other square
+        # square_size = WIDTH//self.boardSize
+        for row in range(self.boardSize):
+            for col in range(row % 2, self.boardSize, 2):  # Paint every other square
                 pygame.draw.rect(window, BOARD_COLOR_2,
-                                 (row * SQUARE_SIZE, col * SQUARE_SIZE, SQUARE_SIZE, SQUARE_SIZE))
+                                 (row * self.square_size, col * self.square_size, self.square_size, self.square_size))
 
     # Initializes the board, with the pieces on their initial position
     def create_board(self):
         count = 1
-        for row in range(ROWS):
+        for row in range(self.boardSize):
             self.board.append([])
-            for col in range(COLS):
-                # if (col == 0 or col == COLS - 1) and row != 0 and row != ROWS - 1:
-                #     self.board[row].append(Piece(row, col, WHITE))
-
-                if (row == 0 or row == ROWS - 1) and col != 0 and col != COLS - 1:
+            for col in range(self.boardSize):
+                if (row == 0 or row == self.boardSize - 1) and col != 0 and col != self.boardSize - 1:
                 # if ((row==0 or row==ROWS-1) and (col == 0 or col == COLS-1)):
-                    self.board[row].append(Piece(row, col, BLACK))
+                    self.board[row].append(Piece(row, col, BLACK, self.square_size))
                     self.npBoard[row][col] = count
                     count += 1
 
@@ -54,8 +53,8 @@ class Board:
     # Draws everything, board and pieces of the current game state
     def draw(self, window):
         self.draw_background(window)
-        for row in range(ROWS):
-            for col in range(COLS):
+        for row in range(self.boardSize):
+            for col in range(self.boardSize):
                 piece = self.board[row][col]
                 if piece != 0:
                     piece.draw(window)
@@ -87,7 +86,7 @@ class Board:
 
     # Returns the piece on the given position, or 0 if it does not exist
     def get_piece(self, row, col):
-        if 0 <= col < COLS and 0 <= row < ROWS:
+        if 0 <= col < self.boardSize and 0 <= row < self.boardSize:
             return self.board[row][col]
         return 0
 
@@ -147,13 +146,13 @@ class Board:
         self.maxSoFar = 0
         self.visited = []
         
-        for row in range(ROWS):
+        for row in range(self.boardSize):
             self.visited.append([])
-            for col in range(COLS):
+            for col in range(self.boardSize):
                 self.visited[row].append(False)
                 
-        for row in range(ROWS):
-            for col in range(COLS):
+        for row in range(self.boardSize):
+            for col in range(self.boardSize):
                 tempiece = self.get_piece(row,col) 
                 if tempiece != 0 and tempiece.color == turn and not self.visited[row][col]:
                    self.counter = 0
@@ -164,7 +163,7 @@ class Board:
         return self.maxSoFar
 
     def dfs(self, row, col, colorPiece):
-        if not (0 <= col < COLS and 0 <= row < ROWS) or self.visited[row][col]: return
+        if not (0 <= col < self.boardSize and 0 <= row < self.boardSize) or self.visited[row][col]: return
 
         tempiece = self.get_piece(row, col)
         if tempiece == 0 or tempiece.color != colorPiece: return
@@ -181,7 +180,7 @@ class Board:
 
         hor_moves = 0
         ver_moves = 0
-        for i in range(COLS):
+        for i in range(self.boardSize):
             if self.board[piece.row][i] != 0:
                 hor_moves += 1  # Count pieces on the horizontal line
             if self.board[i][piece.col] != 0:
@@ -218,7 +217,7 @@ class Board:
                 if temp2 != 0 and temp2.color == piece.color:
                     negativeValidMove = False
 
-        if positiveValidMove and (piece.col + hor_moves < COLS):
+        if positiveValidMove and (piece.col + hor_moves < self.boardSize):
             moves.append((piece.row, piece.col + hor_moves))
 
         if negativeValidMove and (piece.col - hor_moves) >= 0:
@@ -246,7 +245,7 @@ class Board:
                 if temp2 != 0 and temp2.color == piece.color:
                     negativeValidMove = False
 
-        if positiveValidMove and (piece.row + ver_moves < ROWS):
+        if positiveValidMove and (piece.row + ver_moves < self.boardSize):
             moves.append((piece.row + ver_moves, piece.col))
 
         if negativeValidMove and (piece.row - ver_moves >= 0):
@@ -268,7 +267,7 @@ class Board:
         count = 0
         if direction == 0: # up
 
-            for rowIter in range(0, BOARD_SIZE):
+            for rowIter in range(0, self.boardSize):
                 if(self.npBoard[rowIter][col] != 0):
                     count += 1
 
@@ -278,29 +277,29 @@ class Board:
                 return -1,-1
         if direction == 1: # right
 
-            for colIter in range(0, BOARD_SIZE):
+            for colIter in range(0, self.boardSize):
                 if(self.npBoard[row][colIter] != 0):
                     count += 1
 
-            if(col + count < BOARD_SIZE and self.npBoard[row][col + count] == 0):
+            if(col + count < self.boardSize and self.npBoard[row][col + count] == 0):
                 return row, col + count
             else:
                 return -1,-1
 
         if direction == 2: # down
 
-            for rowIter in range(0, BOARD_SIZE):
+            for rowIter in range(0, self.boardSize):
                 if(self.npBoard[rowIter][col] != 0):
                     count += 1
 
-            if(row + count < BOARD_SIZE and self.npBoard[row + count][col] == 0):
+            if(row + count < self.boardSize and self.npBoard[row + count][col] == 0):
                 return row+count, col
             else:
                 return -1,-1
 
         if direction == 3: #left
 
-            for colIter in range(0, BOARD_SIZE):
+            for colIter in range(0, self.boardSize):
                 if(self.npBoard[row][colIter] != 0):
                     count += 1
 
