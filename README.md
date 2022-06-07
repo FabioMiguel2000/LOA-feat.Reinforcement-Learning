@@ -2,6 +2,17 @@
 
 This project was developed during the Artificial Intelligence Course, at FEUP. A simplified version of the game Lines of Actions is solved using reinforcement learning. 
 
+<table>
+   <tr>
+    <th>Random Agent (Before Training)</th>
+    <th>Trained Agent using TRPO</th>
+  </tr>
+  <tr>
+    <td><img src="https://github.com/FabioMiguel2000/LOA-feat.Reinforcement-Learning/blob/main/img/random_5x5.gif" alt=""></td>
+    <td><img src="https://github.com/FabioMiguel2000/LOA-feat.Reinforcement-Learning/blob/main/img/ppo_5x5.gif" alt=""></td>
+  </tr>
+</table>
+
 ## Installation and prerequisite
 
 1. Install Python3, see [official website](https://www.python.org/downloads/)
@@ -73,8 +84,8 @@ tensorboard --logdir=logs
 
 ## Group Members
 
-[Fabio Huang](https://github.com/FabioMiguel2000)
+- [Fabio Huang](https://github.com/FabioMiguel2000) / up201806829@fe.up.pt
 
-[Ivo Ribeiro](https://github.com/RapaTachos)
+- [Ivo Ribeiro](https://github.com/RapaTachos) / up201307718@fe.up.pt
 
-[Leonor Beirão](https://github.com/leo-nor)
+- [Leonor Beirão](https://github.com/leo-nor) / up201806798@fe.up.pt
