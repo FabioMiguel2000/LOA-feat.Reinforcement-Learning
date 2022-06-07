@@ -1,5 +1,7 @@
 # Lines of Actions Using RL
 
+This project was developed during the Artificial Intelligence Course, at FEUP. A simplified version of the game Lines of Actions is solved using reinforcement learning. 
+
 ## Installation and prerequisite
 
 1. Install Python3, see [official website](https://www.python.org/downloads/)
@@ -29,7 +31,6 @@ Using the Command Line, for Linux or MacOS users, inside the `/src` directory:
 python3 main.py [--board=BOARD_SIZE]
 ```
 
-
 Options:
 ```
 
@@ -51,7 +52,6 @@ Options:
 ```
 
 
-
 ## Guide
 
 - After installing the prerequisites, running the command shown above:
@@ -68,3 +68,13 @@ tensorboard --logdir=logs
 ```
 
 - Open a browser, and head to `http://localhost:6006` (the port number may vary, see detail on the terminal)
+
+
+
+## Group Members
+
+[Fabio Huang](https://github.com/FabioMiguel2000)
+
+[Ivo Ribeiro](https://github.com/RapaTachos)
+
+[Leonor Beirão](https://github.com/leo-nor)
