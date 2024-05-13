@@ -1,6 +1,11 @@
 # Lines of Actions Using RL
+![Pygame](https://img.shields.io/badge/Pygame-v2.1.2-green)
+![StableBaselines](https://img.shields.io/badge/Stable_Baselines-v1.5.0-blue)
+![OpenAIGym](https://img.shields.io/badge/OpenAI_Gym-v0.21.0-blue)
 
 This project was developed during the Artificial Intelligence Course, at FEUP. A simplified version of the game Lines of Actions is solved using reinforcement learning. 
+
+Project Grade: 19.5/20
 
 <table>
    <tr>
